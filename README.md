@@ -17,14 +17,15 @@ Optional settings for the field are:
 				setting						default-value
 
                 'scale'                 =>  2,              // decimal digits, 0 for integers
-                'signed'                =>  'false',        // disallow negative
-                'padFractionalZeros'    =>  'true',         // if true, then pads zeros at end to the length of scale
+                'signed'                =>  false,        // disallow negative
+                'padFractionalZeros'    =>  true,         // if true, then pads zeros at end to the length of scale
                 'mask'                  =>  '$num',         // currency mask, ie: '$ num' , '€ num' , '£ num'
                 'thousandsSeparator'    =>  ',',            // any single character
                 'radix'                 =>  '.',            // fractional delimiter
                 'mapToRadix'            =>  '[\'.\']',      // symbols to process as radix
                 'min'                   =>  false,          // optional number interval options
                 'max'                   =>  false,          // optional number interval options
+                'return'                =>  'float'         // optional string to return meta as float, not string
 
 The returned value for the field is an unstyled value. So, even if you see a currency field-value of '$ 199.00', the stored value is '199'. This is so that you can gracefully fall back to a text or numeric field, and can switch masks without much problems.
 
@@ -77,6 +78,11 @@ Example:
 
 
 **changelog:**
+
+1.1 (December 4th, 2018)
+feature: add field-setting return so that meta-value is float instead of string
+enhancement: signed and padFractionalZeros setting can be input as both boolean and string
+
 1.0.1 (December 4th, 2018)
 bugfix: Removed redeclaring of field-name so that returned value is unstyled.
 

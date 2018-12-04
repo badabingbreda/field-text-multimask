@@ -3,7 +3,7 @@
  * Plugin Name: Meta Box Input Mask Custom Field
  * Plugin URI: https://www.cftoolbox.io
  * Description: A javascript Input Mask Field plugin for Meta Box. Allows you to add masked fields like currency-fields.
- * Version: 1.0.1
+ * Version: 1.1
  * Author: Badabing Breda
  * Author URI: https://www.badabing.nl
  * License: MIT
@@ -12,7 +12,6 @@
 // init on ... well .. init..
 add_action( 'init' , '_multimask_init' );
 
-
 /**
  * callback that adds field multimask
  * @return [type] [description]
@@ -20,6 +19,18 @@ add_action( 'init' , '_multimask_init' );
 function _multimask_init() {
 
     if ( class_exists( 'RWMB_Field' ) ) {
+
+        /* only pass in 2 parameters, that's all we need */
+        add_filter( 'rwmb_get_value' , 'my_normalize_juggler' , 100, 2 );
+
+        //
+        function my_normalize_juggler( $value , $field  ) {
+            if ($field['type'] == 'multimask' ) {
+                if ( isset( $field['return'] ) && $field['return'] == 'float' ) return (float)$value;
+            }
+            // if not returned earlier return as is
+            return $value;
+        }
 
         class RWMB_Multimask_Field extends RWMB_Field {
 
@@ -50,6 +61,7 @@ function _multimask_init() {
                     'mapToRadix'            =>  '[\'.\']',      // symbols to process as radix
                     'min'                   =>  false,          // optional number interval options
                     'max'                   =>  false,          // optional number interval options
+                    'return'                =>  'string',       // how to return value from meta/value: 'string' , 'float'
                 );
 
                 // parse the field settings
@@ -57,6 +69,11 @@ function _multimask_init() {
                     $field,
                     $default_options
                 );
+
+                // make sure signed and padFractionalZeros can be passed in as true/false ( boolean ) or 'true'/'false' (string)
+                $field['signed'] = is_bool($field['signed']) ? ( ( $field['signed'] == false ) ? 'false' : 'true' ) : $field['signed'] ;
+                $field['padFractionalZeros'] = is_bool($field['padFractionalZeros']) ? ( ( $field['padFractionalZeros'] == false ) ? 'false' : 'true' ) : $field['padFractionalZeros'] ;
+
 
                 // add a hidden field-value. This is the stored and returned value
                 $return_string = sprintf(
