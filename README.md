@@ -26,6 +26,8 @@ Optional settings for the field are:
                 'min'                   =>  false,          // optional number interval options
                 'max'                   =>  false,          // optional number interval options
 
+The returned value for the field is an unstyled value. So, even if you see a currency field-value of '$ 199.00', the stored value is '199'. This is so that you can gracefully fall back to a text or numeric field, and can switch masks without much problems.
+
 ## Example:
 
 Example:
@@ -75,5 +77,8 @@ Example:
 
 
 **changelog:**
+1.0.1 (December 4th, 2018)
+bugfix: Removed redeclaring of field-name so that returned value is unstyled.
+
 1.0 (December 3rd, 2018)
-Initial release
+Initial release.

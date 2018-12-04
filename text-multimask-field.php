@@ -3,7 +3,7 @@
  * Plugin Name: Meta Box Input Mask Custom Field
  * Plugin URI: https://www.cftoolbox.io
  * Description: A javascript Input Mask Field plugin for Meta Box. Allows you to add masked fields like currency-fields.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: Badabing Breda
  * Author URI: https://www.badabing.nl
  * License: MIT
@@ -41,15 +41,15 @@ function _multimask_init() {
 
                 $default_options = array(
                     'mask_type'             =>  'currency',
-                    'scale'                 =>  '2',
-                    'signed'                =>  'false',
-                    'padFractionalZeros'    =>  'true',
-                    'mask'                  =>  '$num',
-                    'thousandsSeparator'    =>  ',',
-                    'radix'                 =>  '.',
-                    'mapToRadix'            =>  '[\'.\']',
-                    'min'                   =>  false,
-                    'max'                   =>  false,
+                    'scale'                 =>  2,              // decimal digits, 0 for integers
+                    'signed'                =>  'false',        // disallow negative
+                    'padFractionalZeros'    =>  'true',         // if true, then pads zeros at end to the length of scale
+                    'mask'                  =>  '$num',         // currency mask, ie: '$ num' , '€ num' , '£ num'
+                    'thousandsSeparator'    =>  ',',            // any single character
+                    'radix'                 =>  '.',            // fractional delimiter
+                    'mapToRadix'            =>  '[\'.\']',      // symbols to process as radix
+                    'min'                   =>  false,          // optional number interval options
+                    'max'                   =>  false,          // optional number interval options
                 );
 
                 // parse the field settings
@@ -58,7 +58,7 @@ function _multimask_init() {
                     $default_options
                 );
 
-                // add the actual value-field. This one will be hidden but will hold the actual value
+                // add a hidden field-value. This is the stored and returned value
                 $return_string = sprintf(
                     '<input type="multimask" name="%s" id="%s" value="%s" style="display:none;">',
                     $field['field_name'],
@@ -66,9 +66,9 @@ function _multimask_init() {
                     $meta
                 );
 
-                // add a masked field. This would return the masked value, which we don't want
+                // add a masked field just for show. We want an unmasked field-value as a return value
                  $return_string .= sprintf(
-                    '<input type="multimask" name="%s" id="__%s" value="%s">',
+                    '<input type="multimask" name="__%s" id="__%s" value="%s">',
                     $field['field_name'],
                     $field['id'],
                     $meta
