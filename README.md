@@ -77,14 +77,18 @@ Example:
     }
 
 
-**changelog:**
+### changelog:
 
-1.1 (December 4th, 2018)
+**1.1** (December 4th, 2018)
+
 feature: add field-setting return so that meta-value is float instead of string
+
 enhancement: signed and padFractionalZeros setting can be input as both boolean and string
 
-1.0.1 (December 4th, 2018)
+**1.0.1** (December 4th, 2018)
+
 bugfix: Removed redeclaring of field-name so that returned value is unstyled.
 
-1.0 (December 3rd, 2018)
+**1.0** (December 3rd, 2018)
+
 Initial release.
