@@ -3,7 +3,7 @@
 # Meta Box Multimask Field
 
 Multimask fieldtype is a fieldtype that is based on the imaskjs javascript library. This library allows you to very easily create custom layouts for your fields.
-https://unmanner.github.io/imaskjs/
+https://unmanner.github.io/imaskjs/ and https://unmanner.github.io/imaskjs/guide.html
 
 This is short docs for multimask fieldtype for Meta Box. More info can be found on libraries page.
 
@@ -14,26 +14,28 @@ after activation you will have the 'multimask' field-type at your displosal.
 
 Optional settings for the field are:
 
-				setting						default-value
+                setting                     default-value
 
-                'scale'                 =>  2,              // decimal digits, 0 for integers
-                'signed'                =>  false,        // disallow negative
-                'padFractionalZeros'    =>  true,         // if true, then pads zeros at end to the length of scale
-                'mask'                  =>  '$num',         // currency mask, ie: '$ num' , '€ num' , '£ num'
-                'thousandsSeparator'    =>  ',',            // any single character
-                'radix'                 =>  '.',            // fractional delimiter
-                'mapToRadix'            =>  '[\'.\']',      // symbols to process as radix
-                'min'                   =>  false,          // optional number interval options
-                'max'                   =>  false,          // optional number interval options
-                'return'                =>  'float'         // optional string to return meta as float, not string
+                'mask_type'             =>  'currency',       // optional: 'currency' / 'regex' / 'custom'
+                'scale'                 =>  2,                // decimal digits, 0 for integers
+                'signed'                =>  false,            // disallow negative
+                'padFractionalZeros'    =>  true,             // if true, then pads zeros at end to the length of scale
+                'mask'                  =>  '$num',           // currency mask, ie: '$ num' , '€ num' , '£ num'
+                'thousandsSeparator'    =>  ',',              // any single character
+                'radix'                 =>  '.',              // fractional delimiter
+                'mapToRadix'            =>  '[\'.\']',        // symbols to process as radix
+                'min'                   =>  false,            // optional number interval options
+                'max'                   =>  false,            // optional number interval options
+                'return'                =>  'float',          // optional string to return meta as float, not string
+                'placeholder'           =>  '',               // optional placeholder text
+                'store'                 =>  'unmaskedValue',  // optional how to store value to the postmeta: 'value' / 'unmaskedValue'
+                'custom'                =>  ''                // custom regex or full settings (depending on mask_type)
 
 The returned value for the field is an unstyled value. So, even if you see a currency field-value of '$ 199.00', the stored value is '199'. This is so that you can gracefully fall back to a text or numeric field, and can switch masks without much problems.
 
 ## Example:
 
 Example:
-
-
 
     add_filter( 'rwmb_meta_boxes', 'agent_meta_box' );
     /**
@@ -50,27 +52,59 @@ Example:
             'priority'  => 'high',      // high / low
             'fields' => array(
 	            // fields go here
-	            array(
-	                'name'                  =>  'Dollars',
-	                'id'                    =>  'my_dollar_amount',
-	                'type'                  =>  'multimask',
-	                'scale'                 => 0,
-	                'padFractionalZeros'    => 'false',
-	                'mask'                  => '$ num'
-	            ),
-	            array(
-	                'name'                  =>  'Euros',
-	                'id'                    =>  'my_euro_amount',
-	                'type'                  =>  'multimask',
-	                'scale'                 => 0,
-	                'padFractionalZeros'    => 'false',
-	                'mask'                  => '€ num',
-	                'min'                   => -1000,
-	                'max'                   => 3000000,
-	                'radix'                 => ',',
-	                'thousandsSeparator'    => '.',
-	                'mapToRadix'            => '[\'.\']'
-	            )
+                array(  // USD currency format with US number format
+                    'name'                  =>  'Dollars',
+                    'id'                    =>  'my_number_format',
+                    'type'                  =>  'multimask',
+                    'scale'                 => 0,
+                    'signed'                => true,
+                    'padFractionalZeros'    => false,
+                    'mask'                  => '$ num'
+                ),
+                array(  // Euro currency with European number format
+                    'name'                  =>  'Euros',
+                    'id'                    =>  'my_euro_currency',
+                    'type'                  =>  'multimask',
+                    'scale'                 => 0,
+                    'signed'                => true,
+                    'padFractionalZeros'    => false,
+                    'mask'                  => '€ num',
+                    'min'                   => -1000,
+                    'radix'                 => ',',
+                    'thousandsSeparator'    => '.',
+                    'mapToRadix'            => '[\'.\']'
+                ),
+                array(  // Dutch postal code
+                    'name'                  =>  'Postal Code',
+                    'id'                    =>  'my_postal_code',
+                    'type'                  =>  'multimask',
+                    'mask_type'             =>  'custom',
+                    'custom'               =>  "mask: '0### aa', definitions: { '0': /[1-9]/, '#':/[0-9]/, 'a': /[a-zA-Z]/ }",
+                    'store'                 => 'value'                  // store to postmeta-table as masked-value
+                ),
+                array(  // Input restricted to coco coco
+                    'name'                  =>  'Enter coco coco',
+                    'id'                    =>  'my_continue',
+                    'type'                  =>  'multimask',
+                    'mask_type'             =>  'custom',
+                    'custom'                 =>  "mask: 'coco coco', definitions: { 'c': /[cC]/, 'o': /[oO]/ }",
+                    'store'                 => 'value',
+                    'desc'                  => 'Enter coco coco'
+                ),
+                array( // Phone number in format 0-000-000-000
+                    'name'        => 'Phone number',
+                    'label_description' => '',
+                    'id'          => 'my_phone_number',
+                    'desc'        => 'Enter Phone number',
+                    'type'        => 'multimask',
+                    'mask_type'   => 'custom',
+                    'custom'      => "mask: '0-000-000-000'",
+                    'store'       => 'value',
+
+                    // Placeholder
+                    'placeholder' => '1-800-234-567',
+
+                ),
             ),
         );
         return $meta_boxes;
@@ -78,6 +112,10 @@ Example:
 
 
 ### changelog:
+
+**1.2** (December 4th, 2018)
+
+enhancement: added mask_type 'regex' and 'custom'.
 
 **1.1** (December 4th, 2018)
 

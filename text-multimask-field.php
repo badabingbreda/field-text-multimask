@@ -3,27 +3,32 @@
  * Plugin Name: Meta Box Input Mask Custom Field
  * Plugin URI: https://www.cftoolbox.io
  * Description: A javascript Input Mask Field plugin for Meta Box. Allows you to add masked fields like currency-fields.
- * Version: 1.1
+ * Version: 1.2
  * Author: Badabing Breda
  * Author URI: https://www.badabing.nl
  * License: MIT
  */
 
 // init on ... well .. init..
-add_action( 'init' , '_multimask_init' );
+add_action( 'init' , '__multimask_init' );
 
 /**
  * callback that adds field multimask
  * @return [type] [description]
  */
-function _multimask_init() {
+function __multimask_init() {
 
     if ( class_exists( 'RWMB_Field' ) ) {
 
         /* only pass in 2 parameters, that's all we need */
         add_filter( 'rwmb_get_value' , 'my_normalize_juggler' , 100, 2 );
 
-        //
+        /**
+         * function to return the value as float, not string
+         * @param  [type] $value [description]
+         * @param  [type] $field [description]
+         * @return [type]        [description]
+         */
         function my_normalize_juggler( $value , $field  ) {
             if ($field['type'] == 'multimask' ) {
                 if ( isset( $field['return'] ) && $field['return'] == 'float' ) return (float)$value;
@@ -51,17 +56,20 @@ function _multimask_init() {
             public static function html( $meta, $field ) {
 
                 $default_options = array(
-                    'mask_type'             =>  'currency',
-                    'scale'                 =>  2,              // decimal digits, 0 for integers
-                    'signed'                =>  'false',        // disallow negative
-                    'padFractionalZeros'    =>  'true',         // if true, then pads zeros at end to the length of scale
-                    'mask'                  =>  '$num',         // currency mask, ie: '$ num' , '€ num' , '£ num'
-                    'thousandsSeparator'    =>  ',',            // any single character
-                    'radix'                 =>  '.',            // fractional delimiter
-                    'mapToRadix'            =>  '[\'.\']',      // symbols to process as radix
-                    'min'                   =>  false,          // optional number interval options
-                    'max'                   =>  false,          // optional number interval options
-                    'return'                =>  'string',       // how to return value from meta/value: 'string' , 'float'
+                    'mask_type'             =>  'currency',         // 'currency' / 'regex' / 'custom'
+                    'scale'                 =>  2,                  // decimal digits, 0 for integers
+                    'signed'                =>  'false',            // disallow negative
+                    'padFractionalZeros'    =>  'true',             // if true, then pads zeros at end to the length of scale
+                    'mask'                  =>  '$num',             // currency mask, ie: '$ num' , '€ num' , '£ num'
+                    'thousandsSeparator'    =>  ',',                // any single character
+                    'radix'                 =>  '.',                // fractional delimiter
+                    'mapToRadix'            =>  '[\'.\']',          // symbols to process as radix
+                    'min'                   =>  false,              // optional number interval options
+                    'max'                   =>  false,              // optional number interval options
+                    'return'                =>  'string',           // how to return value from meta/value: 'string' , 'float'
+                    'store'                 =>  'unmaskedValue',    // how to store value to the meta: 'value' / 'unmaskedValue'
+                    'placeholder'           =>  '',
+                    'custom'                =>  (isset($field['mask_type']) && $field['mask_type'] == 'regex' )?"/^[0-9]\d{0,4}$/":"",  // full custom settings or regex
                 );
 
                 // parse the field settings
@@ -85,7 +93,8 @@ function _multimask_init() {
 
                 // add a masked field just for show. We want an unmasked field-value as a return value
                  $return_string .= sprintf(
-                    '<input type="multimask" name="__%s" id="__%s" value="%s">',
+                    '<input type="multimask" placeholder="%s" name="__%s" id="__%s" value="%s">',
+                    $field['placeholder'],
                     $field['field_name'],
                     $field['id'],
                     $meta
@@ -108,8 +117,35 @@ function _multimask_init() {
                                                     $field['max']?",max: {$field['max']}":'',
                                                     $field['id'],
                                                     $field['id'],
-                                                    $field['id']
+                                                    $field['id'],
+                                                    $field['store']
                                             );
+                    break;
+                    case "regex":
+                    $return_string .= sprintf(
+                                                self::get_mask_template( $field['mask_type'] ),
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['custom'],
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['store']
+                                            );
+                    break;
+                    default:
+                    case "custom":
+                    $return_string .= sprintf(
+                                                self::get_mask_template( $field['mask_type'] ),
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['custom'],
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['id'],
+                                                    $field['store']
+                                            );
+
                     break;
                 }
 
@@ -140,7 +176,36 @@ function _multimask_init() {
                 }
             );
             /* make sure to write accepted changes to the actual meta-field */
-            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.unmaskedValue;});
+            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+        </script>
+EOT;
+                    break;
+                    case "regex":
+    $mask_template = <<<EOT
+        <script type="text/javascript">
+            var mask__%s = new IMask(
+                document.getElementById( '__%s' ),
+                {
+                    mask: %s,
+                }
+            );
+            /* make sure to write accepted changes to the actual meta-field */
+            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+        </script>
+EOT;
+                    break;
+                    default:
+                    case "custom":
+    $mask_template = <<<EOT
+        <script type="text/javascript">
+            var mask__%s = new IMask(
+                document.getElementById( '__%s' ),
+                {
+                    %s
+                }
+            );
+            /* make sure to write accepted changes to the actual meta-field */
+            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
         </script>
 EOT;
                     break;
