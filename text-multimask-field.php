@@ -3,25 +3,25 @@
  * Plugin Name: Meta Box Input Mask Custom Field
  * Plugin URI: https://www.cftoolbox.io
  * Description: A javascript Input Mask Field plugin for Meta Box. Allows you to add masked fields like currency-fields.
- * Version: 1.2
+ * Version: 1.3
  * Author: Badabing Breda
  * Author URI: https://www.badabing.nl
  * License: MIT
  */
 
 // init on ... well .. init..
-add_action( 'init' , '__multimask_init' );
+add_action( 'init' , 'badabing_multimask_init' );
 
 /**
  * callback that adds field multimask
  * @return [type] [description]
  */
-function __multimask_init() {
+function badabing_multimask_init() {
 
     if ( class_exists( 'RWMB_Field' ) ) {
 
         /* only pass in 2 parameters, that's all we need */
-        add_filter( 'rwmb_get_value' , 'my_normalize_juggler' , 100, 2 );
+        add_filter( 'rwmb_get_value' , 'multimask_normalize_juggler' , 100, 2 );
 
         /**
          * function to return the value as float, not string
@@ -29,7 +29,7 @@ function __multimask_init() {
          * @param  [type] $field [description]
          * @return [type]        [description]
          */
-        function my_normalize_juggler( $value , $field  ) {
+        function multimask_normalize_juggler( $value , $field  ) {
             if ($field['type'] == 'multimask' ) {
                 if ( isset( $field['return'] ) && $field['return'] == 'float' ) return (float)$value;
             }
@@ -44,7 +44,11 @@ function __multimask_init() {
         	 * @return [type] [description]
         	 */
         	public static function admin_enqueue_scripts() {
-        		wp_enqueue_script( 'imask-plugin', "https://unpkg.com/imask" );
+
+                wp_enqueue_script( 'imask-plugin', plugins_url( '/', __FILE__ ) . "js/imask.4.1.5.min.js" , array() , '1.3' , false );
+
+                /* or, enqueue file below instead to get latest version of imask */
+                // wp_enqueue_script( 'imask-plugin', "https://unpkg.com/imask" );
         	}
 
             /**
