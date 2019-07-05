@@ -113,6 +113,9 @@ Example:
 
 ### changelog:
 
+**1.3** (July 5th, 2019)
+Added $(document).ready() for use with Frontend Submissions
+
 **1.2** (December 4th, 2018)
 
 enhancement: added mask_type 'regex' and 'custom'.

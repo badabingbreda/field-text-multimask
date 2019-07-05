@@ -170,31 +170,39 @@ function badabing_multimask_init() {
 
     $mask_template = <<<EOT
         <script type="text/javascript">
-            var mask__%s = new IMask(
-                document.getElementById( '__%s' ),
-                {
-                    mask: '\%s',
-                    blocks: {
-                        num: {mask: Number, thousandsSeparator: '%s', scale: %s, signed: %s, padFractionalZeros: %s%s%s%s%s}
-                    }
-                }
-            );
-            /* make sure to write accepted changes to the actual meta-field */
-            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+            (function($) {
+                $(document).ready( function() {
+                    var mask__%s = new IMask(
+                        document.getElementById( '__%s' ),
+                        {
+                            mask: '\%s',
+                            blocks: {
+                                num: {mask: Number, thousandsSeparator: '%s', scale: %s, signed: %s, padFractionalZeros: %s%s%s%s%s}
+                            }
+                        }
+                    );
+                    /* make sure to write accepted changes to the actual meta-field */
+                    mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+                });
+            })(jQuery);
         </script>
 EOT;
                     break;
                     case "regex":
     $mask_template = <<<EOT
         <script type="text/javascript">
-            var mask__%s = new IMask(
-                document.getElementById( '__%s' ),
-                {
-                    mask: %s,
-                }
-            );
-            /* make sure to write accepted changes to the actual meta-field */
-            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+            (function($) {
+                $(document).ready( function() {
+                    var mask__%s = new IMask(
+                        document.getElementById( '__%s' ),
+                        {
+                            mask: %s,
+                        }
+                    );
+                    /* make sure to write accepted changes to the actual meta-field */
+                    mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+                });
+            })(jQuery);
         </script>
 EOT;
                     break;
@@ -202,14 +210,18 @@ EOT;
                     case "custom":
     $mask_template = <<<EOT
         <script type="text/javascript">
-            var mask__%s = new IMask(
-                document.getElementById( '__%s' ),
-                {
-                    %s
-                }
-            );
-            /* make sure to write accepted changes to the actual meta-field */
-            mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+            (function($) {
+                $(document).ready( function() {
+                    var mask__%s = new IMask(
+                        document.getElementById( '__%s' ),
+                        {
+                            %s
+                        }
+                    );
+                    /* make sure to write accepted changes to the actual meta-field */
+                    mask__%s.on("accept", function() { document.getElementById( '%s' ).value = mask__%s.%s;});
+                });
+            })(jQuery);
         </script>
 EOT;
                     break;
