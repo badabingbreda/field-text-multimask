@@ -42,7 +42,7 @@ class RWMB_Multimask_Field extends \RWMB_Field {
      */
     public static function admin_enqueue_scripts() {
 
-        wp_enqueue_script( 'imask-plugin', BADABINGMULTIMASK_URL . "js/imask.4.1.5.min.js" , array() , '1.3' , false );
+        wp_enqueue_script( 'imask-plugin', BADABINGMULTIMASK_URL . "js/imask.6.0.7.min.js" , array() , BADABINGMULTIMASK_VERSION , false );
 
         /* or, enqueue file below instead to get latest version of imask */
         // wp_enqueue_script( 'imask-plugin', "https://unpkg.com/imask" );
