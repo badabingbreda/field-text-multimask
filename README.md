@@ -1,13 +1,19 @@
 
 
-# Meta Box Multimask Field
+# 1. Meta Box Multimask Field
+
+## Last updated: March 21st, 2021
+
+Added Controls for Meta Box Builder 4, drag and drop fields.
+
+## About this plugin
 
 Multimask fieldtype is a fieldtype that is based on the imaskjs javascript library. This library allows you to very easily create custom layouts for your fields.
 https://unmanner.github.io/imaskjs/ and https://unmanner.github.io/imaskjs/guide.html
 
 This is short docs for multimask fieldtype for Meta Box. More info can be found on libraries page.
 
-## Usage:
+## 1.1. Usage:
 Download and activate the plugin or copy the plugin-code from 'input-multimask-field.php' and paste to your functions.php.
 
 after activation you will have the 'multimask' field-type at your displosal.
@@ -20,6 +26,7 @@ Optional settings for the field are:
                 'scale'                 =>  2,                // decimal digits, 0 for integers
                 'signed'                =>  false,            // disallow negative
                 'padFractionalZeros'    =>  true,             // if true, then pads zeros at end to the length of scale
+                'normalizeZeros'        =>  false,            // append or remove zeros at ends
                 'mask'                  =>  '$num',           // currency mask, ie: '$ num' , '€ num' , '£ num'
                 'thousandsSeparator'    =>  ',',              // any single character
                 'radix'                 =>  '.',              // fractional delimiter
@@ -33,7 +40,7 @@ Optional settings for the field are:
 
 The returned value for the field is an unstyled value. So, even if you see a currency field-value of '$ 199.00', the stored value is '199'. This is so that you can gracefully fall back to a text or numeric field, and can switch masks without much problems.
 
-## Example:
+## 1.2. Example:
 
 Example:
 
@@ -111,7 +118,10 @@ Example:
     }
 
 
-### changelog:
+### 1.2.1. changelog:
+
+**1.4** (March 21st, 2021)
+Updated for usage with Meta Box Builder 4, added field controls. Cleaned up code by seperating into multiple files.
 
 **1.3** (July 5th, 2019)
 Added $(document).ready() for use with Frontend Submissions

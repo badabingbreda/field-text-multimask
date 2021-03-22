@@ -145,7 +145,18 @@ class Controls {
                       // 'type' => 'number',
                       'dependency' => 'mask_type:regex', // 'custom_layout:true',
                     ],
-                    '/^[0-9]{0,4}$/',    // default value
+                    '/^[0-9]{0,6}$/',    // default value
+                    'general'    // settings tab
+                ),
+                \MBB\Control::Input(
+                  'custom',
+                    [
+                      'label'   => __( 'Regex', 'bada-multimask' ),
+                      'tooltip' => __( 'Regular Expression (see https://imask.js.org/guide.html )', 'bada-multimask' ),
+                      // 'type' => 'number',
+                      'dependency' => 'mask_type:custom', // 'custom_layout:true',
+                    ],
+                    "mask: '0### aa', definitions: { '0': /[1-9]/, '#':/[0-9]/, 'a': /[a-zA-Z]/ }",    // default value
                     'general'    // settings tab
                 ),
                 \MBB\Control::Input(
