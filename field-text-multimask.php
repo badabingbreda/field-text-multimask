@@ -24,9 +24,11 @@ define( 'BADABINGMULTIMASK_FILE', __FILE__ );
 define( 'BADABINGMULTIMASK_URL', plugins_url( '/', __FILE__ ) );
 
 require_once( 'inc/RWMB_Multimask_Field.php' );
+require_once( 'inc/RegisterField.php' );
 require_once( 'inc/Controls.php' );
 
+use BadabingMultimask\RegisterField;
 use BadabingMultimask\Controls;
 
-new RWMB_Multimask_Field();
+new RegisterField();
 new Controls();
