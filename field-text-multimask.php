@@ -10,7 +10,7 @@
  * Plugin Name: Meta Box Input Mask Custom Field
  * Plugin URI:  https://www.badabing.nl
  * Description: A Javascript Input Mask Field plugin for Meta Box. Allows you to add masked fields.
- * Version:     1.4.0
+ * Version:     1.4.1
  * Author:      Badabingbreda
  * Author URI:  https://www.badabing.nl
  * Text Domain: bada-multimask
@@ -18,7 +18,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-define( 'BADABINGMULTIMASK_VERSION', '1.4.0' );
+define( 'BADABINGMULTIMASK_VERSION', '1.4.1' );
 define( 'BADABINGMULTIMASK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BADABINGMULTIMASK_FILE', __FILE__ );
 define( 'BADABINGMULTIMASK_URL', plugins_url( '/', __FILE__ ) );
