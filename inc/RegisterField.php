@@ -17,6 +17,8 @@ public static function init() {
 
     if ( !class_exists( 'RWMB_Field' ) ) return;
 
+    require_once( 'RWMB_Multimask_Field.php' );
+
     /* only pass in 2 parameters, that's all we need */
     add_filter( 'rwmb_get_value' , __CLASS__ . '::multimask_normalize_juggler' , 100, 2 );
 
